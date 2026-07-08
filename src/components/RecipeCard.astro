@@ -1,0 +1,118 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  href: string;
+  title: string;
+  ingress: string;
+  image?: ImageMetadata;
+  imageAlt?: string;
+  totalTime?: string;
+  difficulty?: string;
+  color?: string;
+}
+
+const {
+  href,
+  title,
+  ingress,
+  image,
+  imageAlt,
+  totalTime,
+  difficulty,
+  color = '#8a6a1f',
+} = Astro.props;
+---
+
+<a class="recipe-card" href={href} style={`--card-color: ${color}`}>
+  {
+    image && (
+      <div class="recipe-card__media">
+        <Image src={image} alt={imageAlt ?? title} width={640} height={480} />
+      </div>
+    )
+  }
+  <div class="recipe-card__body">
+    <h3 class="recipe-card__title">{title}</h3>
+    <p class="recipe-card__ingress">{ingress}</p>
+    {
+      (totalTime || difficulty) && (
+        <div class="recipe-card__pills">
+          {totalTime && <span class="pill">{totalTime}</span>}
+          {difficulty && <span class="pill">{difficulty}</span>}
+        </div>
+      )
+    }
+  </div>
+</a>
+
+<style>
+  .recipe-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow);
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .recipe-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 34px rgba(42, 35, 32, 0.18);
+  }
+
+  .recipe-card__media {
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+  }
+
+  .recipe-card__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .recipe-card__body {
+    background: var(--card-color);
+    color: #fff;
+    padding: var(--space-md) var(--space-md) var(--space-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    flex: 1;
+  }
+
+  .recipe-card__title {
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1.15;
+  }
+
+  .recipe-card__ingress {
+    margin: 0;
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .recipe-card__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    margin-top: auto;
+  }
+
+  .pill {
+    display: inline-block;
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    border-radius: 6px;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+</style>

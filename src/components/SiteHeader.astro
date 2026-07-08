@@ -1,0 +1,41 @@
+---
+import { Image } from 'astro:assets';
+import chef from '../assets/chef-header.png';
+import { url } from '../lib/url';
+---
+
+<header class="site-header">
+  <a class="site-header__brand" href={url()} aria-label="Chef Julie – til forsiden">
+    <Image src={chef} alt="Chef Julie" width={200} height={250} />
+    <span>Chef Julie</span>
+  </a>
+</header>
+
+<style>
+  .site-header {
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .site-header__brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    text-decoration: none;
+    color: var(--color-text);
+    padding-block: var(--space-sm);
+  }
+
+  .site-header__brand :global(img) {
+    width: auto;
+    height: 90px;
+  }
+
+  .site-header__brand span {
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: 0.02em;
+  }
+</style>

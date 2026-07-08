@@ -1,0 +1,113 @@
+---
+import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RecipeCard from '../components/RecipeCard.astro';
+import logo from '../assets/logo.png';
+import { url } from '../lib/url';
+
+const recipes = (await getCollection('recipes', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
+);
+
+// Fargepalett som fordeles på kortene inntil vi ev. styrer farge per oppskrift.
+const cardColors = ['#8a6a1f', '#6f7d2a', '#9a5a2a', '#5f7355', '#8a5a4a'];
+---
+
+<BaseLayout title="Chef Julie – Oppskrifter">
+  <section class="intro">
+    <div class="container intro__inner">
+      <div class="intro__logo">
+        <Image src={logo} alt="Chef Julie" width={360} height={360} />
+      </div>
+      <div class="intro__text">
+        <h1>Jeg heter Julie.</h1>
+        <p>Jeg elsker å lage mat. Her deler jeg mine beste oppskrifter.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="oppskrifter" class="recipes">
+    <div class="container">
+      <h2 class="recipes__heading">Oppskrifter</h2>
+      {
+        recipes.length === 0 ? (
+          <p>Ingen oppskrifter er publisert ennå. Kom snart tilbake!</p>
+        ) : (
+          <div class="recipes__grid">
+            {recipes.map((recipe, i) => (
+              <RecipeCard
+                href={url(`oppskrifter/${recipe.id}`)}
+                title={recipe.data.title}
+                ingress={recipe.data.ingress}
+                image={recipe.data.heroImage}
+                imageAlt={recipe.data.heroImageAlt}
+                totalTime={recipe.data.totalTime}
+                difficulty={recipe.data.difficulty}
+                color={cardColors[i % cardColors.length]}
+              />
+            ))}
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .intro {
+    background: var(--color-surface);
+    padding-block: var(--space-xl);
+    clip-path: polygon(0 0, 100% 0, 100% 88%, 0 100%);
+  }
+
+  .intro__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    align-items: center;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .intro__logo {
+    max-width: 20rem;
+  }
+
+  .intro__text h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin: 0 0 var(--space-sm);
+  }
+
+  .intro__text p {
+    font-size: 1.35rem;
+    color: var(--color-text);
+    margin: 0;
+    max-width: 22rem;
+  }
+
+  @media (min-width: 48rem) {
+    .intro__inner {
+      grid-template-columns: minmax(0, 22rem) 1fr;
+      justify-items: start;
+      text-align: left;
+      gap: var(--space-xl);
+    }
+  }
+
+  .recipes {
+    background: var(--color-bg);
+    padding-block: var(--space-xl);
+  }
+
+  .recipes__heading {
+    font-size: 2.25rem;
+    margin: 0 0 var(--space-lg);
+  }
+
+  .recipes__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+    gap: var(--space-lg);
+  }
+</style>
