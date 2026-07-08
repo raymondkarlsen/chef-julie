@@ -17,12 +17,13 @@ const { data } = recipe;
 const { Content } = await render(recipe);
 
 const metaItems = [
-  data.servings ? { label: 'Porsjoner', value: `${data.servings}` } : null,
-  data.prepTime ? { label: 'Forberedelse', value: data.prepTime } : null,
-  data.cookTime ? { label: 'Koketid', value: data.cookTime } : null,
-  data.totalTime ? { label: 'Totalt', value: data.totalTime } : null,
-  data.difficulty ? { label: 'Vanskelighet', value: data.difficulty } : null,
-].filter((item): item is { label: string; value: string } => item !== null);
+  data.servings ? { icon: '🍽️', label: 'Porsjoner', value: `${data.servings}` } : null,
+  data.prepTime ? { icon: '🔪', label: 'Forberedelse', value: data.prepTime } : null,
+  data.totalTime ? { icon: '⏱️', label: 'Totalt', value: data.totalTime } : null,
+  data.difficulty ? { icon: '📊', label: 'Vanskelighet', value: data.difficulty } : null,
+].filter(
+  (item): item is { icon: string; label: string; value: string } => item !== null
+);
 ---
 
 <BaseLayout title={`${data.title} – Chef Julie`} description={data.ingress}>
@@ -68,8 +69,11 @@ const metaItems = [
         <dl class="recipe__meta container">
           {metaItems.map((item) => (
             <div class="recipe__meta-item">
-              <dt>{item.label}</dt>
+              <span class="recipe__meta-icon" aria-hidden="true">
+                {item.icon}
+              </span>
               <dd>{item.value}</dd>
+              <dt>{item.label}</dt>
             </div>
           ))}
         </dl>
@@ -221,6 +225,16 @@ const metaItems = [
 
   .recipe__meta-item {
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+  }
+
+  .recipe__meta-icon {
+    font-size: 1.6rem;
+    line-height: 1;
+    margin-bottom: 0.2rem;
   }
 
   .recipe__meta-item dt {
@@ -228,10 +242,11 @@ const metaItems = [
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: var(--color-muted);
+    order: 3;
   }
 
   .recipe__meta-item dd {
-    margin: 0.2rem 0 0;
+    margin: 0;
     font-weight: 700;
     font-size: 1.1rem;
   }
