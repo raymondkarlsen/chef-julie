@@ -243,6 +243,25 @@ const metaItems = [
     align-items: start;
   }
 
+  /* Seksjonsoverskrifter med aksent-strek – tydelig skille også på mobil */
+  .recipe__ingredients h2,
+  .recipe__steps h2,
+  .recipe__gallery h2 {
+    display: inline-block;
+    margin: 0 0 var(--space-md);
+    padding-bottom: 0.3rem;
+    border-bottom: 3px solid var(--color-accent);
+  }
+
+  /* Ingredienser som eget kort på alle skjermstørrelser */
+  .recipe__ingredients {
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: var(--space-md) var(--space-lg);
+    box-shadow: var(--shadow);
+  }
+
   @media (min-width: 52rem) {
     .recipe__body {
       grid-template-columns: 20rem 1fr;
@@ -251,10 +270,6 @@ const metaItems = [
     .recipe__ingredients {
       position: sticky;
       top: var(--space-md);
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius);
-      padding: var(--space-md) var(--space-lg);
     }
   }
 
@@ -264,26 +279,66 @@ const metaItems = [
   }
 
   .recipe__ingredients ul {
-    padding-left: 1.2rem;
+    list-style: none;
+    padding-left: 0;
     margin: 0;
   }
 
   .recipe__ingredients li {
-    margin-bottom: 0.3rem;
+    position: relative;
+    padding-left: 1.4rem;
+    margin-bottom: 0.45rem;
   }
 
+  .recipe__ingredients li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--color-accent);
+  }
+
+  /* Fremgangsmåte med nummererte sirkler */
   .recipe__steps ol {
-    padding-left: 1.4rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    counter-reset: step;
   }
 
   .recipe__steps li {
-    margin-bottom: var(--space-md);
-    padding-left: 0.4rem;
+    counter-increment: step;
+    position: relative;
+    padding-left: 3.25rem;
+    margin-bottom: var(--space-lg);
+    min-height: 2.25rem;
+  }
+
+  .recipe__steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    background: var(--color-accent);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-serif);
+    font-weight: 700;
+    font-size: 1.1rem;
   }
 
   .recipe__tips {
     margin-top: var(--space-lg);
     background: var(--color-accent-soft);
+    border-left: 4px solid var(--color-accent);
     border-radius: var(--radius);
     padding: var(--space-md) var(--space-lg);
   }
