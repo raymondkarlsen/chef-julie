@@ -4,6 +4,9 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import MetaIcon from '../../components/MetaIcon.astro';
+import ingredienserImg from '../../assets/chef-ingredienser.png';
+import stegImg from '../../assets/chef-steg.png';
+import tipsImg from '../../assets/chef-tips.png';
 
 export async function getStaticPaths() {
   const recipes = await getCollection('recipes', ({ data }) => !data.draft);
@@ -91,7 +94,16 @@ const metaItems = [
       {
         data.ingredientGroups.length > 0 && (
           <section class="recipe__ingredients" aria-labelledby="ingredienser">
-            <h2 id="ingredienser">Ingredienser</h2>
+            <div class="section-head">
+              <Image
+                class="section-head__img"
+                src={ingredienserImg}
+                alt=""
+                width={160}
+                height={200}
+              />
+              <h2 id="ingredienser">Ingredienser</h2>
+            </div>
             {data.ingredientGroups.map((group) => (
               <div class="recipe__ingredient-group">
                 {group.heading && <h3>{group.heading}</h3>}
@@ -107,7 +119,16 @@ const metaItems = [
       }
 
       <section class="recipe__steps" aria-labelledby="fremgangsmate">
-        <h2 id="fremgangsmate">Slik gjør du</h2>
+        <div class="section-head">
+          <Image
+            class="section-head__img"
+            src={stegImg}
+            alt=""
+            width={160}
+            height={200}
+          />
+          <h2 id="fremgangsmate">Slik gjør du</h2>
+        </div>
         {
           data.instructions.length > 0 ? (
             <ol>
@@ -125,7 +146,16 @@ const metaItems = [
         {
           data.tips.length > 0 && (
             <div class="recipe__tips">
-              <h3>Tips</h3>
+              <div class="section-head section-head--tips">
+                <Image
+                  class="section-head__img"
+                  src={tipsImg}
+                  alt=""
+                  width={160}
+                  height={200}
+                />
+                <h3>Tips</h3>
+              </div>
               <ul>
                 {data.tips.map((tip) => (
                   <li>{tip}</li>
@@ -273,6 +303,24 @@ const metaItems = [
     margin: 0 0 var(--space-md);
     padding-bottom: 0.3rem;
     border-bottom: 3px solid var(--color-accent);
+  }
+
+  .section-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .section-head__img {
+    width: auto;
+    height: 68px;
+    flex-shrink: 0;
+  }
+
+  .section-head h2,
+  .section-head h3 {
+    margin: 0;
   }
 
   /* Ingredienser som eget kort på alle skjermstørrelser */

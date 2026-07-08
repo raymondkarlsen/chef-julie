@@ -1,11 +1,11 @@
 ---
 import { Image } from 'astro:assets';
-import logo from '../assets/logo.png';
+import chef from '../assets/chef-header.png';
 ---
 
 <header class="site-header">
   <a class="site-header__brand" href="/" aria-label="Chef Julie – til forsiden">
-    <Image src={logo} alt="Chef Julie" width={72} height={72} />
+    <Image src={chef} alt="Chef Julie" width={200} height={250} />
     <span>Chef Julie</span>
   </a>
 </header>
@@ -20,16 +20,15 @@ import logo from '../assets/logo.png';
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.15rem;
     text-decoration: none;
     color: var(--color-text);
     padding-block: var(--space-sm);
   }
 
   .site-header__brand :global(img) {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
+    width: auto;
+    height: 90px;
   }
 
   .site-header__brand span {
