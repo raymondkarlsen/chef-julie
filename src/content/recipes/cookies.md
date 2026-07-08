@@ -1,8 +1,8 @@
 ---
 title: Julie's Chocolate Chip Cookies
 ingress: Seige, gyldne cookies med masse sjokoladebiter – Julies egen favoritt som blir perfekte hver gang.
-heroImage: ../../assets/recipes/cookies.svg
-heroImageAlt: Chocolate chip cookies med smeltede sjokoladebiter
+heroImage: ../../assets/recipes/cookies.png
+heroImageAlt: Nybakte chocolate chip cookies med smeltet sjokolade på et stekebrett
 servings: 20
 prepTime: 15 min
 cookTime: 10-12 min
