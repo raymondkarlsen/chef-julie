@@ -1,103 +1,112 @@
 ---
 import { getCollection } from 'astro:content';
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RecipeCard from '../components/RecipeCard.astro';
+import logo from '../assets/logo.svg';
 
 const recipes = (await getCollection('recipes', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
 );
+
+// Fargepalett som fordeles på kortene inntil vi ev. styrer farge per oppskrift.
+const cardColors = ['#8a6a1f', '#6f7d2a', '#9a5a2a', '#5f7355', '#8a5a4a'];
 ---
 
 <BaseLayout title="Chef Julie – Oppskrifter">
-  <section class="hero">
-    <div class="container hero__inner">
-      <p class="hero__eyebrow">Velkommen til kjøkkenet</p>
-      <h1 class="hero__title">Enkle oppskrifter, laget med hjertet</h1>
-      <p class="hero__lead">
-        Her finner du favorittoppskriftene til Chef Julie – hverdagsmat, bakst og
-        smårettene som gjør en dag litt bedre.
-      </p>
-      <a class="hero__cta" href="#oppskrifter">Se oppskriftene</a>
+  <section class="intro">
+    <div class="container intro__inner">
+      <div class="intro__logo">
+        <Image src={logo} alt="Chef Julie" width={360} height={360} />
+      </div>
+      <div class="intro__text">
+        <h1>Jeg heter Julie.</h1>
+        <p>Jeg elsker å lage mat. Her deler jeg mine beste oppskrifter.</p>
+      </div>
     </div>
   </section>
 
-  <section id="oppskrifter" class="container recipes">
-    <h2 class="recipes__heading">Oppskrifter</h2>
-    {
-      recipes.length === 0 ? (
-        <p>Ingen oppskrifter er publisert ennå. Kom snart tilbake!</p>
-      ) : (
-        <div class="recipes__grid">
-          {recipes.map((recipe) => (
-            <RecipeCard
-              href={`/oppskrifter/${recipe.id}`}
-              title={recipe.data.title}
-              ingress={recipe.data.ingress}
-              image={recipe.data.heroImage}
-              imageAlt={recipe.data.heroImageAlt}
-              totalTime={recipe.data.totalTime}
-              category={recipe.data.category}
-            />
-          ))}
-        </div>
-      )
-    }
+  <section id="oppskrifter" class="recipes">
+    <div class="container">
+      <h2 class="recipes__heading">Oppskrifter</h2>
+      {
+        recipes.length === 0 ? (
+          <p>Ingen oppskrifter er publisert ennå. Kom snart tilbake!</p>
+        ) : (
+          <div class="recipes__grid">
+            {recipes.map((recipe, i) => (
+              <RecipeCard
+                href={`/oppskrifter/${recipe.id}`}
+                title={recipe.data.title}
+                ingress={recipe.data.ingress}
+                image={recipe.data.heroImage}
+                imageAlt={recipe.data.heroImageAlt}
+                totalTime={recipe.data.totalTime}
+                difficulty={recipe.data.difficulty}
+                color={cardColors[i % cardColors.length]}
+              />
+            ))}
+          </div>
+        )
+      }
+    </div>
   </section>
 </BaseLayout>
 
 <style>
-  .hero {
-    background: linear-gradient(160deg, var(--color-accent-soft), var(--color-bg));
+  .intro {
+    background: var(--color-surface);
     padding-block: var(--space-xl);
+    clip-path: polygon(0 0, 100% 0, 100% 88%, 0 100%);
   }
 
-  .hero__inner {
-    max-width: 44rem;
+  .intro__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-lg);
+    align-items: center;
+    justify-items: center;
     text-align: center;
   }
 
-  .hero__eyebrow {
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--color-accent);
+  .intro__logo {
+    max-width: 20rem;
+  }
+
+  .intro__text h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
     margin: 0 0 var(--space-sm);
   }
 
-  .hero__title {
-    font-size: clamp(2rem, 5vw, 3.25rem);
-    margin: 0 0 var(--space-md);
+  .intro__text p {
+    font-size: 1.35rem;
+    color: var(--color-text);
+    margin: 0;
+    max-width: 22rem;
   }
 
-  .hero__lead {
-    font-size: 1.15rem;
-    color: var(--color-muted);
-    margin: 0 0 var(--space-lg);
-  }
-
-  .hero__cta {
-    display: inline-block;
-    background: var(--color-accent);
-    color: #fff;
-    text-decoration: none;
-    font-weight: 600;
-    padding: 0.75rem 1.6rem;
-    border-radius: 999px;
+  @media (min-width: 48rem) {
+    .intro__inner {
+      grid-template-columns: minmax(0, 22rem) 1fr;
+      justify-items: start;
+      text-align: left;
+      gap: var(--space-xl);
+    }
   }
 
   .recipes {
+    background: var(--color-bg);
     padding-block: var(--space-xl);
   }
 
   .recipes__heading {
-    font-size: 2rem;
+    font-size: 2.25rem;
     margin: 0 0 var(--space-lg);
   }
 
   .recipes__grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
     gap: var(--space-lg);
   }
 </style>
