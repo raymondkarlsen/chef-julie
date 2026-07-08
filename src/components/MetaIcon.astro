@@ -1,0 +1,63 @@
+---
+interface Props {
+  name: 'servings' | 'prep' | 'total' | 'difficulty';
+}
+
+const { name } = Astro.props;
+---
+
+<svg
+  class="meta-icon"
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.75"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  {
+    name === 'servings' && (
+      <>
+        <path d="M3 2v7c0 1.1.9 2 2 2h1a2 2 0 0 0 2-2V2" />
+        <path d="M5.5 2v20" />
+        <path d="M20 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />
+      </>
+    )
+  }
+  {
+    name === 'prep' && (
+      <>
+        <line x1="10" x2="14" y1="2" y2="2" />
+        <line x1="12" x2="15" y1="14" y2="11" />
+        <circle cx="12" cy="14" r="8" />
+      </>
+    )
+  }
+  {
+    name === 'total' && (
+      <>
+        <circle cx="12" cy="12" r="10" />
+        <polyline points="12 6 12 12 16 14" />
+      </>
+    )
+  }
+  {
+    name === 'difficulty' && (
+      <>
+        <path d="m12 14 4-4" />
+        <path d="M3.34 19a10 10 0 1 1 17.32 0" />
+      </>
+    )
+  }
+</svg>
+
+<style>
+  .meta-icon {
+    width: 1.6rem;
+    height: 1.6rem;
+    color: var(--color-accent);
+  }
+</style>
