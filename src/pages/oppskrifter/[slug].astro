@@ -1,0 +1,282 @@
+---
+import { getCollection, render } from 'astro:content';
+import { Image } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const recipes = await getCollection('recipes', ({ data }) => !data.draft);
+  return recipes.map((recipe) => ({
+    params: { slug: recipe.id },
+    props: { recipe },
+  }));
+}
+
+const { recipe } = Astro.props;
+const { data } = recipe;
+const { Content } = await render(recipe);
+
+const metaItems = [
+  data.servings ? { label: 'Porsjoner', value: `${data.servings}` } : null,
+  data.prepTime ? { label: 'Forberedelse', value: data.prepTime } : null,
+  data.cookTime ? { label: 'Koketid', value: data.cookTime } : null,
+  data.totalTime ? { label: 'Totalt', value: data.totalTime } : null,
+  data.difficulty ? { label: 'Vanskelighet', value: data.difficulty } : null,
+].filter((item): item is { label: string; value: string } => item !== null);
+---
+
+<BaseLayout title={`${data.title} – Chef Julie`} description={data.ingress}>
+  <article class="recipe">
+    <header class="recipe__header container">
+      {data.category && <span class="tag">{data.category}</span>}
+      <h1 class="recipe__title">{data.title}</h1>
+      <p class="recipe__ingress">{data.ingress}</p>
+      {
+        data.tags.length > 0 && (
+          <ul class="recipe__tags">
+            {data.tags.map((tag) => (
+              <li>#{tag}</li>
+            ))}
+          </ul>
+        )
+      }
+    </header>
+
+    {
+      data.heroImage && (
+        <div class="recipe__hero container">
+          <Image
+            src={data.heroImage}
+            alt={data.heroImageAlt ?? data.title}
+            width={1200}
+            height={720}
+            priority
+          />
+        </div>
+      )
+    }
+
+    {
+      metaItems.length > 0 && (
+        <dl class="recipe__meta container">
+          {metaItems.map((item) => (
+            <div class="recipe__meta-item">
+              <dt>{item.label}</dt>
+              <dd>{item.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+
+    <div class="recipe__body container">
+      {
+        data.ingredientGroups.length > 0 && (
+          <section class="recipe__ingredients" aria-labelledby="ingredienser">
+            <h2 id="ingredienser">Ingredienser</h2>
+            {data.ingredientGroups.map((group) => (
+              <div class="recipe__ingredient-group">
+                {group.heading && <h3>{group.heading}</h3>}
+                <ul>
+                  {group.items.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </section>
+        )
+      }
+
+      <section class="recipe__steps" aria-labelledby="fremgangsmate">
+        <h2 id="fremgangsmate">Slik gjør du</h2>
+        {
+          data.instructions.length > 0 ? (
+            <ol>
+              {data.instructions.map((step) => (
+                <li>{step}</li>
+              ))}
+            </ol>
+          ) : (
+            <div class="recipe__prose">
+              <Content />
+            </div>
+          )
+        }
+
+        {
+          data.tips.length > 0 && (
+            <div class="recipe__tips">
+              <h3>Tips</h3>
+              <ul>
+                {data.tips.map((tip) => (
+                  <li>{tip}</li>
+                ))}
+              </ul>
+            </div>
+          )
+        }
+      </section>
+    </div>
+
+    {
+      data.gallery && data.gallery.length > 0 && (
+        <section class="recipe__gallery container" aria-labelledby="bilder">
+          <h2 id="bilder">Bilder</h2>
+          <div class="recipe__gallery-grid">
+            {data.gallery.map((img) => (
+              <Image src={img.src} alt={img.alt} width={600} height={400} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+
+    <p class="recipe__back container">
+      <a href="/#oppskrifter">← Tilbake til alle oppskrifter</a>
+    </p>
+  </article>
+</BaseLayout>
+
+<style>
+  .recipe__header {
+    padding-block: var(--space-xl) var(--space-md);
+    max-width: 46rem;
+    text-align: center;
+    margin-inline: auto;
+  }
+
+  .recipe__title {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin: var(--space-sm) 0;
+  }
+
+  .recipe__ingress {
+    font-size: 1.2rem;
+    color: var(--color-muted);
+    margin: 0;
+  }
+
+  .recipe__tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+    justify-content: center;
+    padding: 0;
+    margin: var(--space-md) 0 0;
+    color: var(--color-muted);
+    font-size: 0.9rem;
+  }
+
+  .recipe__hero :global(img) {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    object-fit: cover;
+  }
+
+  .recipe__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-lg);
+    justify-content: center;
+    margin-block: var(--space-lg);
+    padding: var(--space-md);
+    border-block: 1px solid var(--color-border);
+  }
+
+  .recipe__meta-item {
+    text-align: center;
+  }
+
+  .recipe__meta-item dt {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-muted);
+  }
+
+  .recipe__meta-item dd {
+    margin: 0.2rem 0 0;
+    font-weight: 700;
+    font-size: 1.1rem;
+  }
+
+  .recipe__body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-xl);
+    align-items: start;
+  }
+
+  @media (min-width: 52rem) {
+    .recipe__body {
+      grid-template-columns: 20rem 1fr;
+    }
+
+    .recipe__ingredients {
+      position: sticky;
+      top: var(--space-md);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: var(--space-md) var(--space-lg);
+    }
+  }
+
+  .recipe__ingredient-group h3 {
+    font-size: 1rem;
+    margin: var(--space-md) 0 var(--space-xs);
+  }
+
+  .recipe__ingredients ul {
+    padding-left: 1.2rem;
+    margin: 0;
+  }
+
+  .recipe__ingredients li {
+    margin-bottom: 0.3rem;
+  }
+
+  .recipe__steps ol {
+    padding-left: 1.4rem;
+  }
+
+  .recipe__steps li {
+    margin-bottom: var(--space-md);
+    padding-left: 0.4rem;
+  }
+
+  .recipe__tips {
+    margin-top: var(--space-lg);
+    background: var(--color-accent-soft);
+    border-radius: var(--radius);
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .recipe__tips h3 {
+    margin-top: 0;
+  }
+
+  .recipe__gallery {
+    margin-top: var(--space-xl);
+  }
+
+  .recipe__gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: var(--space-md);
+  }
+
+  .recipe__gallery-grid :global(img) {
+    border-radius: var(--radius);
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+
+  .recipe__back {
+    margin-block: var(--space-xl);
+  }
+</style>

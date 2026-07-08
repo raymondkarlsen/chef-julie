@@ -1,0 +1,103 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import RecipeCard from '../components/RecipeCard.astro';
+
+const recipes = (await getCollection('recipes', ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
+);
+---
+
+<BaseLayout title="Chef Julie – Oppskrifter">
+  <section class="hero">
+    <div class="container hero__inner">
+      <p class="hero__eyebrow">Velkommen til kjøkkenet</p>
+      <h1 class="hero__title">Enkle oppskrifter, laget med hjertet</h1>
+      <p class="hero__lead">
+        Her finner du favorittoppskriftene til Chef Julie – hverdagsmat, bakst og
+        smårettene som gjør en dag litt bedre.
+      </p>
+      <a class="hero__cta" href="#oppskrifter">Se oppskriftene</a>
+    </div>
+  </section>
+
+  <section id="oppskrifter" class="container recipes">
+    <h2 class="recipes__heading">Oppskrifter</h2>
+    {
+      recipes.length === 0 ? (
+        <p>Ingen oppskrifter er publisert ennå. Kom snart tilbake!</p>
+      ) : (
+        <div class="recipes__grid">
+          {recipes.map((recipe) => (
+            <RecipeCard
+              href={`/oppskrifter/${recipe.id}`}
+              title={recipe.data.title}
+              ingress={recipe.data.ingress}
+              image={recipe.data.heroImage}
+              imageAlt={recipe.data.heroImageAlt}
+              totalTime={recipe.data.totalTime}
+              category={recipe.data.category}
+            />
+          ))}
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    background: linear-gradient(160deg, var(--color-accent-soft), var(--color-bg));
+    padding-block: var(--space-xl);
+  }
+
+  .hero__inner {
+    max-width: 44rem;
+    text-align: center;
+  }
+
+  .hero__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--color-accent);
+    margin: 0 0 var(--space-sm);
+  }
+
+  .hero__title {
+    font-size: clamp(2rem, 5vw, 3.25rem);
+    margin: 0 0 var(--space-md);
+  }
+
+  .hero__lead {
+    font-size: 1.15rem;
+    color: var(--color-muted);
+    margin: 0 0 var(--space-lg);
+  }
+
+  .hero__cta {
+    display: inline-block;
+    background: var(--color-accent);
+    color: #fff;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.75rem 1.6rem;
+    border-radius: 999px;
+  }
+
+  .recipes {
+    padding-block: var(--space-xl);
+  }
+
+  .recipes__heading {
+    font-size: 2rem;
+    margin: 0 0 var(--space-lg);
+  }
+
+  .recipes__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    gap: var(--space-lg);
+  }
+</style>

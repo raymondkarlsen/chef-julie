@@ -1,0 +1,87 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  href: string;
+  title: string;
+  ingress: string;
+  image?: ImageMetadata;
+  imageAlt?: string;
+  totalTime?: string;
+  category?: string;
+}
+
+const { href, title, ingress, image, imageAlt, totalTime, category } = Astro.props;
+---
+
+<a class="recipe-card" href={href}>
+  {
+    image && (
+      <div class="recipe-card__media">
+        <Image src={image} alt={imageAlt ?? title} width={640} height={420} />
+      </div>
+    )
+  }
+  <div class="recipe-card__body">
+    {category && <span class="tag">{category}</span>}
+    <h3 class="recipe-card__title">{title}</h3>
+    <p class="recipe-card__ingress">{ingress}</p>
+    {totalTime && <p class="recipe-card__meta">⏱ {totalTime}</p>}
+  </div>
+</a>
+
+<style>
+  .recipe-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow);
+    transition:
+      transform 0.15s ease,
+      box-shadow 0.15s ease;
+  }
+
+  .recipe-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(42, 35, 32, 0.14);
+  }
+
+  .recipe-card__media {
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+  }
+
+  .recipe-card__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .recipe-card__body {
+    padding: var(--space-md);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .recipe-card__title {
+    margin: 0;
+    font-size: 1.3rem;
+  }
+
+  .recipe-card__ingress {
+    margin: 0;
+    color: var(--color-muted);
+  }
+
+  .recipe-card__meta {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+  }
+</style>
