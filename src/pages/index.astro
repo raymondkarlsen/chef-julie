@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import RecipeCard from '../components/RecipeCard.astro';
 import logo from '../assets/logo.png';
+import { url } from '../lib/url';
 
 const recipes = (await getCollection('recipes', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.publishedAt.getTime() - a.data.publishedAt.getTime()
@@ -36,7 +37,7 @@ const cardColors = ['#8a6a1f', '#6f7d2a', '#9a5a2a', '#5f7355', '#8a5a4a'];
           <div class="recipes__grid">
             {recipes.map((recipe, i) => (
               <RecipeCard
-                href={`/oppskrifter/${recipe.id}`}
+                href={url(`oppskrifter/${recipe.id}`)}
                 title={recipe.data.title}
                 ingress={recipe.data.ingress}
                 image={recipe.data.heroImage}

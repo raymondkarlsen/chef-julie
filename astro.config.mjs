@@ -4,5 +4,5 @@ import { defineConfig } from 'astro/config';
 // For GitHub Pages på et prosjekt-repo settes vanligvis også 'base'.
 export default defineConfig({
   site: 'https://raymondkarlsen.github.io',
-  // base: '/chef-julie',
+  base: '/chef-julie',
 });

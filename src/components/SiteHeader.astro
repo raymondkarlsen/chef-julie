@@ -1,10 +1,11 @@
 ---
 import { Image } from 'astro:assets';
 import chef from '../assets/chef-header.png';
+import { url } from '../lib/url';
 ---
 
 <header class="site-header">
-  <a class="site-header__brand" href="/" aria-label="Chef Julie – til forsiden">
+  <a class="site-header__brand" href={url()} aria-label="Chef Julie – til forsiden">
     <Image src={chef} alt="Chef Julie" width={200} height={250} />
     <span>Chef Julie</span>
   </a>

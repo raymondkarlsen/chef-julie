@@ -4,6 +4,7 @@ import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import MetaIcon from '../../components/MetaIcon.astro';
+import { url } from '../../lib/url';
 
 export async function getStaticPaths() {
   const recipes = await getCollection('recipes', ({ data }) => !data.draft);
@@ -37,7 +38,7 @@ const metaItems = [
   <SiteHeader slot="header" />
   <article class="recipe">
     <nav class="breadcrumb container" aria-label="Brødsmulesti">
-      <a href="/#oppskrifter">Oppskrifter</a>
+      <a href={url()}>Oppskrifter</a>
       <span aria-hidden="true">›</span>
       <span aria-current="page">{data.title}</span>
     </nav>
@@ -151,7 +152,7 @@ const metaItems = [
     }
 
     <p class="recipe__back container">
-      <a href="/#oppskrifter">← Tilbake til alle oppskrifter</a>
+      <a href={url()}>← Tilbake til alle oppskrifter</a>
     </p>
   </article>
 </BaseLayout>
