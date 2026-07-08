@@ -309,7 +309,7 @@ const metaItems = [
     counter-reset: step;
   }
 
-  .recipe__steps li {
+  .recipe__steps ol li {
     counter-increment: step;
     position: relative;
     padding-left: 3.25rem;
@@ -317,7 +317,7 @@ const metaItems = [
     min-height: 2.25rem;
   }
 
-  .recipe__steps li::before {
+  .recipe__steps ol li::before {
     content: counter(step);
     position: absolute;
     left: 0;
@@ -345,6 +345,26 @@ const metaItems = [
 
   .recipe__tips h3 {
     margin-top: 0;
+  }
+
+  .recipe__tips ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 0;
+  }
+
+  .recipe__tips li {
+    position: relative;
+    padding-left: 1.6rem;
+    margin-bottom: 0.45rem;
+  }
+
+  .recipe__tips li::before {
+    content: '💡';
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 0.9rem;
   }
 
   .recipe__gallery {
