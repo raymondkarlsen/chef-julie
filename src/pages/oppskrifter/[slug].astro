@@ -2,6 +2,7 @@
 import { getCollection, render } from 'astro:content';
 import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
 
 export async function getStaticPaths() {
   const recipes = await getCollection('recipes', ({ data }) => !data.draft);
@@ -25,7 +26,16 @@ const metaItems = [
 ---
 
 <BaseLayout title={`${data.title} – Chef Julie`} description={data.ingress}>
+  <SiteHeader slot="header" />
   <article class="recipe">
+    <nav class="breadcrumb container" aria-label="Brødsmulesti">
+      <a href="/">Forside</a>
+      <span aria-hidden="true">›</span>
+      <a href="/#oppskrifter">Oppskrifter</a>
+      <span aria-hidden="true">›</span>
+      <span aria-current="page">{data.title}</span>
+    </nav>
+
     <header class="recipe__header container">
       {data.category && <span class="tag">{data.category}</span>}
       <h1 class="recipe__title">{data.title}</h1>
@@ -139,10 +149,35 @@ const metaItems = [
 
 <style>
   .recipe__header {
-    padding-block: var(--space-xl) var(--space-md);
+    padding-block: var(--space-lg) var(--space-md);
     max-width: 46rem;
     text-align: center;
     margin-inline: auto;
+  }
+
+  .breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.85rem;
+    color: var(--color-muted);
+    padding-block: var(--space-md) 0;
+  }
+
+  .breadcrumb a {
+    color: var(--color-muted);
+    text-decoration: none;
+  }
+
+  .breadcrumb a:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+
+  .breadcrumb [aria-current='page'] {
+    color: var(--color-text);
+    font-weight: 600;
   }
 
   .recipe__title {

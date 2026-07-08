@@ -19,6 +19,8 @@ const { title, description = 'Enkle og gode oppskrifter fra Chef Julie.' } = Ast
     <title>{title}</title>
   </head>
   <body>
+    <slot name="header" />
+
     <main>
       <slot />
     </main>
