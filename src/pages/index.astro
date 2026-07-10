@@ -4,9 +4,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import RecipeCard from '../components/RecipeCard.astro';
 import logo from '../assets/logo.png';
 import { url } from '../lib/url';
-import { getRecipes, urlForImage } from '../lib/sanity';
+import { getRecipes, getFrontPage, urlForImage } from '../lib/sanity';
 
 const recipes = await getRecipes();
+const front = await getFrontPage();
+
+const heading = front?.heading ?? 'Jeg heter Julie.';
+const intro =
+  front?.intro ?? 'Jeg elsker å lage mat. Her deler jeg mine beste oppskrifter.';
+const frontImageUrl = front?.image?.asset
+  ? urlForImage(front.image).width(720).height(720).fit('crop').auto('format').url()
+  : null;
+const frontImageAlt = front?.image?.alt ?? 'Chef Julie';
 
 // Fargepalett som fordeles på kortene inntil vi ev. styrer farge per oppskrift.
 const cardColors = ['#8a6a1f', '#6f7d2a', '#9a5a2a', '#5f7355', '#8a5a4a'];
@@ -16,11 +25,17 @@ const cardColors = ['#8a6a1f', '#6f7d2a', '#9a5a2a', '#5f7355', '#8a5a4a'];
   <section class="intro">
     <div class="container intro__inner">
       <div class="intro__logo">
-        <Image src={logo} alt="Chef Julie" width={360} height={360} />
+        {
+          frontImageUrl ? (
+            <img src={frontImageUrl} alt={frontImageAlt} width={360} height={360} />
+          ) : (
+            <Image src={logo} alt="Chef Julie" width={360} height={360} />
+          )
+        }
       </div>
       <div class="intro__text">
-        <h1>Jeg heter Julie.</h1>
-        <p>Jeg elsker å lage mat. Her deler jeg mine beste oppskrifter.</p>
+        <h1>{heading}</h1>
+        <p>{intro}</p>
       </div>
     </div>
   </section>
