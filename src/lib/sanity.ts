@@ -81,3 +81,15 @@ export async function getRecipe(slug: string): Promise<Recipe | null> {
     { slug }
   );
 }
+
+export interface FrontPage {
+  heading: string;
+  intro: string;
+  image?: SanityImage;
+}
+
+export async function getFrontPage(): Promise<FrontPage | null> {
+  return sanityClient.fetch(
+    `*[_type == "frontPage"][0]{ heading, intro, image }`
+  );
+}
