@@ -21,58 +21,47 @@ npm run dev
 
 ## Legge til en oppskrift
 
-Oppskrifter ligger som Markdown-filer i `src/content/recipes/`. Kopier en eksisterende
-fil, gi den et nytt filnavn (filnavnet blir URL-en, f.eks. `pannekaker.md` →
-`/oppskrifter/pannekaker`), og fyll ut feltene øverst i filen:
+Oppskrifter redigeres i **Sanity Studio** – et enkelt, visuelt redigeringsverktøy.
+Ingen koding er nødvendig.
 
-```markdown
----
-title: Navn på oppskriften
-ingress: Kort, fristende beskrivelse.
-heroImage: ../../assets/recipes/mitt-bilde.svg
-heroImageAlt: Beskrivelse av bildet
-servings: 4
-prepTime: 10 min
-cookTime: 20 min
-totalTime: 30 min
-difficulty: Enkel        # Enkel | Middels | Avansert
-category: Middag
-tags:
-  - hverdagsmat
-ingredientGroups:
-  - heading: Røre
-    items:
-      - 3 dl mel
-      - 5 dl melk
-instructions:
-  - Steg én.
-  - Steg to.
-tips:
-  - Et nyttig tips.
-publishedAt: 2026-01-15
-draft: false
----
+1. Gå til **https://chef-julie.sanity.studio/** og logg inn.
+2. Trykk **«Oppskrift» → «Create new»**.
+3. Fyll ut feltene (tittel, ingress, bilde, ingredienser, steg, tips …). Dra og
+   slipp et bilde i «Hovedbilde».
+4. Trykk **Publish**. Nettsiden bygges automatisk på nytt, og oppskriften er live
+   etter et par minutter.
 
-Valgfri brødtekst under ingrediens- og fremgangsmåtefeltene.
-```
-
-Bilder legges i `src/assets/recipes/` og refereres relativt fra Markdown-filen.
+Innholdet lagres i Sanity (skytjeneste), og nettsiden henter det ved bygging.
 
 ## Innholdsmodell
 
-Feltene valideres av skjemaet i `src/content.config.ts`. Dette skjemaet er den samme
-innholdsmodellen vi planlegger å bruke også når innholdet på sikt hentes fra et CMS.
+Feltene defineres av skjemaet i `studio/schemaTypes/recipe.ts`. Nettsiden henter
+oppskrifter fra Sanity via `src/lib/sanity.ts`.
+
+### Studio (redigeringsverktøyet)
+
+```bash
+cd studio
+npm install
+npm run dev        # kjør Studio lokalt på http://localhost:3333
+npx sanity deploy  # publiser Studio til chef-julie.sanity.studio
+```
 
 ## Publisering
 
-Nettsiden bygges automatisk og publiseres til **GitHub Pages** ved push til `main`
-(se `.github/workflows/deploy.yml`). Aktiver Pages under repo → Settings → Pages →
-Source: "GitHub Actions".
+Nettsiden bygges automatisk og publiseres til **GitHub Pages**:
 
-Egendefinert domene (f.eks. via one.com) kan kobles på senere under samme innstillinger.
+- ved **push til `main`**, og
+- når en oppskrift **publiseres i Sanity Studio** (via en webhook som utløser
+  GitHub Actions – hendelsestype `sanity-publish`).
+
+Se `.github/workflows/deploy.yml`.
+
+Egendefinert domene (via one.com / eksisterende `raymondkarlsen.no`) er allerede
+koblet på: siden serveres på `raymondkarlsen.no/chef-julie/`.
 
 ## Videre planer
 
-- **Fase 2:** koble innhold til et redaktørvennlig CMS (f.eks. Sanity eller et
-  git-basert CMS) uten å skrive om malene.
 - **Fase 3:** filtrering/søk, SEO, bildeoptimalisering.
+- Evt. «last opp bilde av oppskrift → utkast lages automatisk» som snarvei i tillegg
+  til Studio.
