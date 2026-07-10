@@ -1,22 +1,23 @@
 ---
-import { getCollection, render } from 'astro:content';
-import { Image } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SiteHeader from '../../components/SiteHeader.astro';
 import MetaIcon from '../../components/MetaIcon.astro';
 import { url } from '../../lib/url';
+import { getRecipes, urlForImage, type Recipe } from '../../lib/sanity';
 
 export async function getStaticPaths() {
-  const recipes = await getCollection('recipes', ({ data }) => !data.draft);
+  const recipes = await getRecipes();
   return recipes.map((recipe) => ({
-    params: { slug: recipe.id },
+    params: { slug: recipe.slug },
     props: { recipe },
   }));
 }
 
-const { recipe } = Astro.props;
-const { data } = recipe;
-const { Content } = await render(recipe);
+const { recipe: data } = Astro.props as { recipe: Recipe };
+
+const heroUrl = data.heroImage?.asset
+  ? urlForImage(data.heroImage).width(1200).height(720).fit('crop').auto('format').url()
+  : null;
 
 const metaItems = [
   data.servings
@@ -59,14 +60,13 @@ const metaItems = [
     </header>
 
     {
-      data.heroImage && (
+      heroUrl && (
         <div class="recipe__hero container">
-          <Image
-            src={data.heroImage}
-            alt={data.heroImageAlt ?? data.title}
+          <img
+            src={heroUrl}
+            alt={data.heroImage?.alt ?? data.title}
             width={1200}
             height={720}
-            priority
           />
         </div>
       )
@@ -110,16 +110,12 @@ const metaItems = [
       <section class="recipe__steps" aria-labelledby="fremgangsmate">
         <h2 id="fremgangsmate">Slik gjør du</h2>
         {
-          data.instructions.length > 0 ? (
+          data.instructions.length > 0 && (
             <ol>
               {data.instructions.map((step) => (
                 <li>{step}</li>
               ))}
             </ol>
-          ) : (
-            <div class="recipe__prose">
-              <Content />
-            </div>
           )
         }
 
@@ -137,19 +133,6 @@ const metaItems = [
         }
       </section>
     </div>
-
-    {
-      data.gallery && data.gallery.length > 0 && (
-        <section class="recipe__gallery container" aria-labelledby="bilder">
-          <h2 id="bilder">Bilder</h2>
-          <div class="recipe__gallery-grid">
-            {data.gallery.map((img) => (
-              <Image src={img.src} alt={img.alt} width={600} height={400} />
-            ))}
-          </div>
-        </section>
-      )
-    }
 
     <p class="recipe__back container">
       <a href={url()}>← Tilbake til alle oppskrifter</a>
